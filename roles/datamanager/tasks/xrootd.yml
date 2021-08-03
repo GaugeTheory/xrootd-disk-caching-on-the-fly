@@ -1,0 +1,45 @@
+---
+ - name: Install required packages
+   package:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+   with_items:
+     - xrootd
+
+ - name: Deploy config file to xrootd
+   template:
+    src: "{{ item }}"
+    dest: "/etc/xrootd/{{ item }}"
+    mode: '0777'
+   with_items:
+     - "xrootd-cache.cfg"
+     - "cmsd-cache.cfg"
+
+ - name: Deploy cmsd systemd file
+   template:
+    src: "cmsd@.service"
+    dest: "/usr/lib/systemd/system/cmsd@.service"
+    mode: '0777'
+
+ - name: Deploy redirplugin
+   copy:
+    src: "libRedirPlugin.so"
+    dest: "/usr/lib64/libXrdRedirPluginCache.so"
+    mode: '0777'
+
+ - name: Enable "xrootd/cmsd@cache.service" services
+   service:
+    name: "{{ item }}"
+    enabled: true
+   with_items:
+      - "xrootd@cache.service"
+      - "cmsd@cache.service"
+
+ - name: restart "xrootd/cmsd@cache.service" services
+   service:
+    name: "{{ item }}"
+    state: restarted
+   with_items:
+      - "xrootd@cache.service"
+      - "cmsd@cache.service"

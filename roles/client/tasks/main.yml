@@ -1,0 +1,4 @@
+---
+#  - include: install_xrootd.yml # JUST IN CASE YOU SOMEHOW NEED TO RECOMPILE THE PLUG-IN
+#  - include: compileProxyPrefix.yml # JUST IN CASE YOU SOMEHOW NEED TO RECOMPILE THE PLUG-IN
+  - include: ProxyPrefix.yml

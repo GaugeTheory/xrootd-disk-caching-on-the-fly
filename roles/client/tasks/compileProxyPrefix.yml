@@ -1,0 +1,47 @@
+---
+
+ - name: Download XrdProxyPrefix sources
+   get_url:
+    url=https://github.com/jknedlik/XrdProxyPrefix/archive/kit-proj.zip
+    dest=/tmp/XrdProxyPrefix.zip
+    mode=666
+#   environment:
+#     http_proxy: "http://{{ http_proxy }}:{{ http_port }}"
+   register: xrootd
+
+ - name: Extract XrdProxyPrefix.zip into /tmp/
+   unarchive:
+      src: /tmp/XrdProxyPrefix.zip
+      dest: /tmp/
+      remote_src: true
+   when: xrootd.changed
+
+ - name: Creates /tmp/XrdProxyPrefix/build
+   file:
+    path: "/tmp/XrdProxyPrefix-kit-proj/build"
+    state: directory
+    mode: 0777
+   when: xrootd.changed
+
+ - name: Make xrootd
+   command: make
+   args:
+    chdir: "/tmp/XrdProxyPrefix-kit-proj"
+   environment:
+    XRD_PATH: "/usr/local"
+   when: xrootd.changed
+
+ - name: Deploy XrdProxyPrefix
+   copy:
+    src: "XrdProxyPrefix.so"
+    dest: "/usr/lib64/XrdProxyPrefix.so"
+
+ - name: Deploy XrdProxyPrefix test
+   copy:
+    src: "proxyprefixtest.sh"
+    dest: "/tmp/"
+
+ - name: Deploy XrdProxyDefault.conf
+   copy:
+    src: "XrdProxyDefault.conf"
+    dest: "/tmp/"

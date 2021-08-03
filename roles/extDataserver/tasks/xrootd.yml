@@ -1,0 +1,50 @@
+---
+ - name: Install required packages
+   package:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+   with_items:
+     - xrootd
+
+ - name: Deploy config files to xrootd/cmsd
+   template:
+    src: "{{ item }}"
+    dest: "/etc/xrootd/{{ item }}"
+    mode: '0777'
+   with_items:
+     - "xrootd-cache.cfg"
+
+ - name: Creates directories
+   file:
+    path: "{{item}}"
+    state: directory
+    owner: xrootd
+    group: xrootd
+    mode: 0777
+   with_items:
+     - "/xrdmnt"
+
+ - name: copy testfile
+   copy:
+    src: testfile
+    dest: "{{item}}"
+    owner: xrootd
+    group: xrootd
+    mode: '0777'
+   with_items:
+     - "/xrdmnt/Testfile.test"
+
+ - name: Enable xrootd/cmsd services
+   service:
+    name: "{{ item }}"
+    enabled: true
+   with_items:
+      - "xrootd@cache.service"
+
+ - name: restart xrootd/cmsd services
+   service:
+    name: "{{ item }}"
+    state: restarted
+   with_items:
+      - "xrootd@cache.service"

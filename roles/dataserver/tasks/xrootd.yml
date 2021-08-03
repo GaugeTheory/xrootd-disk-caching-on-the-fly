@@ -1,0 +1,37 @@
+---
+ - name: Install required packages
+   package:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+   with_items:
+     - xrootd
+     
+ - name: Deploy config files to xrootd/cmsd
+   template:
+    src: "{{ item }}"
+    dest: "/etc/xrootd/{{ item }}"
+   with_items:
+     - "xrootd-cache.cfg"
+     - "cmsd-cache.cfg"
+
+ - name: Deploy cmsd systemd file
+   template:
+    src: "cmsd@.service"
+    dest: "/usr/lib/systemd/system/cmsd@.service"
+
+ - name: Enable xrootd/cmsd services
+   service:
+    name: "{{ item }}"
+    enabled: true
+   with_items:
+      - "xrootd@cache.service"
+      - "cmsd@cache.service"
+
+ - name: restart xrootd/cmsd services
+   service:
+    name: "{{ item }}"
+    state: restarted
+   with_items:
+      - "xrootd@cache.service"
+      - "cmsd@cache.service"

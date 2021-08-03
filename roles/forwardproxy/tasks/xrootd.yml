@@ -1,0 +1,30 @@
+---
+ - name: Install required packages
+   package:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+   with_items:
+     - xrootd
+
+ - name: Deploy config files to xrootd/cmsd
+   template:
+    src: "{{ item }}"
+    dest: "/etc/xrootd/{{ item }}"
+    mode: '0777'
+   with_items:
+     - "xrootd-forwardproxy.cfg"
+
+ - name: Enable xrootd/cmsd services
+   service:
+    name: "{{ item }}"
+    enabled: true
+   with_items:
+      - "xrootd@forwardproxy.service"
+
+ - name: restart xrootd/cmsd services
+   service:
+    name: "{{ item }}"
+    state: restarted
+   with_items:
+      - "xrootd@forwardproxy.service"

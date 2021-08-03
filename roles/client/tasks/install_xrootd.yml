@@ -1,0 +1,59 @@
+---
+ - name: Install required packages
+   package:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+   with_items:
+    - git
+    - cmake
+    - make
+    - gcc
+    - zlib-devel
+    - libxml2-devel
+    - fuse
+    - curl
+    - openssl
+    - openssl-devel
+    - libuuid-devel
+    - gcc-c++
+    - unzip
+
+ - name: Download xrootd sources
+   get_url:
+    url=https://github.com/xrootd/xrootd/archive/v4.11.0.tar.gz
+    dest=/tmp/v4.11.0.tar.gz
+    mode=666
+   register: xrootd
+
+ - name: Extract v4.11.0.tar.gz into /tmp/
+   unarchive:
+      src: /tmp/v4.11.0.tar.gz
+      dest: /tmp/
+      remote_src: true
+   when: xrootd.changed
+
+ - name: Creates /tmp/xrootd-4.11.0/build
+   file:
+    path: "/tmp/xrootd-4.11.0/build"
+    state: directory
+    mode: 0777
+   when: xrootd.changed
+
+ - name: CMake xrootd
+   command: cmake ../
+   args:
+    chdir: "/tmp/xrootd-4.11.0/build"
+   when: xrootd.changed
+
+ - name: Make xrootd
+   command: make -j 8
+   args:
+    chdir: "/tmp/xrootd-4.11.0/build"
+   when: xrootd.changed
+
+ - name: Install xrootd from src /tmp/xrootd/build'
+   command: make install
+   args:
+    chdir: "/tmp/xrootd-4.11.0/build"
+   when: xrootd.changed

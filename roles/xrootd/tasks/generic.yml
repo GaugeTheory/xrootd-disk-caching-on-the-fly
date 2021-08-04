@@ -1,0 +1,21 @@
+---
+# - name: Overwrite /etc/yum.conf
+#   template:
+#    src: yum.conf.j2
+#    dest: /etc/yum.conf
+#   when:  http_proxy != "none"
+
+ - name: Overwrite /etc/yum.repos.d/epel.repo
+   copy:
+    src: epel.repo
+    dest: /etc/yum.repos.d/epel.repo
+    mode: '0777'
+
+# - name: Add /etc/yum.repos.d/egi.repo
+#   copy:
+#    src: egi.repo
+#    dest: /etc/yum.repos.d/egi.repo
+
+# - name: disable selinux
+#   selinux:
+#    state: disabled

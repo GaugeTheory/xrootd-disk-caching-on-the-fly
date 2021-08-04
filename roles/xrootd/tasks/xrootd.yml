@@ -1,0 +1,19 @@
+---
+# - name: Install necessary repositories
+#   package:
+#    name:
+#     - epel-release
+#    state: present
+#   environment:
+#    HTTP_PROXY: "http://{{ http_proxy }}:{{ http_port }}"
+#    HTTPS_PROXY: "https://{{ http_proxy }}:{{ http_port }}"
+#   when:  http_proxy != "none"
+
+ - name: Install required packages
+   package:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+   with_items:
+    - xrootd
+#    - xrootd-client

@@ -1,0 +1,32 @@
+---
+# - hosts: dataserver
+#   become: yes
+#   vars_files:
+#     - configs/credentials.yml
+#   roles:
+#     - xrootd
+#     - dataserver
+
+- hosts: cachingproxy
+  become: yes
+  vars_files:
+    - configs/credentials.yml
+  roles:
+    - xrootd
+    - cachingproxy
+
+- hosts: extDataserver
+  become: yes
+  vars_files:
+    - configs/credentials.yml
+  roles:
+    - xrootd
+    - extDataserver
+
+- hosts: client
+  become: yes
+  vars_files:
+    - configs/credentials.yml
+  roles:
+    - xrootd
+    - client

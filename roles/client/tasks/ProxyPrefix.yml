@@ -1,0 +1,28 @@
+---
+ - name: Install required packages
+   package:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+   with_items:
+     - xrootd-client
+
+ - name: Deploy XrdProxyPrefix
+   copy:
+    src: "XrdProxyPrefix.so"
+    dest: "/usr/lib64/XrdProxyPrefix.so"
+    mode: 0777
+
+ - name: Deploy XrdProxyPrefix test
+   template:
+    src: "proxyprefixtest.sh"
+    dest: "/tmp/"
+    owner: "{{testuser}}"
+    group: "{{testuser}}"
+    mode: 0777
+
+ - name: Deploy XrdProxyDefault.conf
+   template:
+    src: "XrdProxyDefault.conf"
+    dest: "/tmp/"
+    mode: 0777

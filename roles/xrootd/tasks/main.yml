@@ -1,0 +1,4 @@
+---
+  - include: generic.yml
+#  - include: install_xrootd.yml
+ # - include: xrootd.yml

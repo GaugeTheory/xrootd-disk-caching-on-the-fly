@@ -1,0 +1,46 @@
+---
+ - name: Install required packages
+   package:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+   with_items:
+     - xrootd
+
+ - name: Creates directory
+   file:
+    path: /var/run/xrootd
+    state: directory
+    owner: xrootd
+    group: xrootd
+    mode: 0777
+
+ - name: Deploy library to xrootd/cmsd
+   copy:
+    src: "libXrdPfc-5.so"
+    dest: "/usr/lib64/libXrdPfc-5.so"
+    owner: root
+    group: root
+    mode: 0755
+
+ - name: Deploy config files to xrootd/cmsd
+   template:
+    src: "{{ item }}"
+    dest: "/etc/xrootd/{{ item }}"
+    mode: 0777
+   with_items:
+     - "xrootd-cachingproxy.cfg"
+
+ - name: Enable xrootd/cmsd services
+   service:
+    name: "{{ item }}"
+    enabled: true
+   with_items:
+      - "xrootd@cachingproxy.service"
+
+ - name: restart xrootd/cmsd services
+   service:
+    name: "{{ item }}"
+    state: restarted
+   with_items:
+      - "xrootd@cachingproxy.service"

@@ -1,0 +1,14 @@
+[dataserver]
+hostname or ip
+
+[datamanager]
+hostname or ip
+
+[client]
+hostname or ip
+
+[extDataserver]
+hostname or ip
+
+[forwardproxy]
+hostname or ip
